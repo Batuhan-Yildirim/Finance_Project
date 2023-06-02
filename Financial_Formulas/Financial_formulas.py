@@ -168,7 +168,3 @@ class Formulas:
         beta = f"Beta Coefficient of {self}: {beta}"
 
         return beta
-
-
-t = "GS"
-print(Formulas.Bankruptcymodels(t))
