@@ -142,7 +142,5 @@ class Yahoo_Finance:
             RealTimePrice = []
         
         return RealTimePrice
-
-print(Yahoo_Finance("C").RealTimePrice())
         
 
