@@ -138,4 +138,3 @@ except KeyError:
     
     print("Run commend ('ticker','information name') -- Such as Alphavantage('AAPL','News')")
     
-

@@ -124,45 +124,25 @@ class Yahoo_Finance:
 
     def RealTimePrice(self):
         try:
-            def web_content_div(web_content, class_path):
-                web_content_div = web_content.find_all("div", {"class": class_path})
-                try:
-                    spans = web_content_div[0].find_all("span")
-                    fin = web_content_div[0].find("fin-streamer").get_text()
-                    texts = [span.get_text() for span in spans]
-                    texts.append(fin)
-                    
-                    ticker = web_content.find_all("h1",{"class":"D(ib) Fz(18px)"})
-                    company_name = ticker[0].get_text()
+            web_url = "https://money.cnn.com/quote/quote.html?utm_source=quote_search&symb=" + self.ticker
+            web_request = requests.get(web_url)
 
-                    texts.append(company_name)
+            content = BeautifulSoup(web_request.text, "lxml")
 
-                except IndexError:
-                    texts = []
+            Data = content.find("td", {"class":"wsod_change"})
+            Data = Data.find_all("span")
+            
+            Price_Change = Data[2].get_text()
+            Price_Change_Per = Data[-1].get_text()
+            
 
-                return texts
-
-            url = "https://finance.yahoo.com/quote/" + self.ticker + "?p=" + self.ticker + "&.tsrc=fin-srch"
-            try:
-                r = requests.get(url)
-                web_content = BeautifulSoup(r.text, "lxml")
-                texts = web_content_div(web_content, "D(ib) Mend(20px)")
-                if texts != []:
-                    output = f"Company Name: {texts[4]}" + ", "
-                    output += f"Price: {texts[3]}" + ", "
-                    output += f"Price change: {texts[1]}" + ", "
-                    output += f"Price Change Percantage: {texts[0]}" + ", "
-                else:
-                    output = []
-
-            except ConnectionError:
-                output = []
-
-            return output
+            RealTimePrice = [Price_Change,Price_Change_Per]
         
-        except KeyError:
-            print("This Symbol (Ticker) is not working! -- *Please Check or Try Another Symbol Such as, ['AAPL','C'] ")
-        except TypeError:
-            print("This Symbol (Ticker) is not working! -- *Please Check or Try Another Symbol Such as, ['AAPL','C'] ")
-        except ValueError:
-            print("This Function Is Not Available!")
+        except IndexError:
+            RealTimePrice = []
+        
+        return RealTimePrice
+
+print(Yahoo_Finance("C").RealTimePrice())
+        
+
