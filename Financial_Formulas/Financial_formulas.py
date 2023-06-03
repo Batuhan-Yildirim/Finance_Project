@@ -5,166 +5,83 @@ import numpy as np
 # Datetime
 from datetime import datetime
 
-# Data Sets
-import sys
-sys.path.insert(0,"D:\dosyalar\Github\Finance_Project\Finance_Data_Sets")
+# Error Message
+import time
 
-import Data_Sets
+#Formulas
+from BankruptcyModels import *
+from Beta import *
+from wacc import *
 
+def rate_limiter(max_requests, interval):
+        """
+        Decorator function to enforce rate limiting on a function.
 
-class Formulas:
+        Args:
+            max_requests (int): Maximum number of requests allowed within the interval.
+            interval (int): Time interval in seconds.
 
-    def Bankruptcymodels(self):
+        Returns:
+            function: Decorated function.
+        """
+        def decorator(func):
+            request_times = []
 
-        company = Data_Sets.AlphaVantage(self).Financial_Statements()
+            def wrapper(*args, **kwargs):
+                # Check the number of requests made within the interval
+                current_time = time.time()
+                request_times.append(current_time)
 
-        total_current_asset = company[1][company[1]["fiscalDateEnding"] == "Total Current Assets"].values[0][1:]
-        total_current_liabilities = company[1][company[1]["fiscalDateEnding"] == "Total Current Liabilities"].values[0][1:]
+                # Remove old requests outside the interval
+                request_times[:] = [t for t in request_times if t > current_time - interval]
 
-        company_working_capital = total_current_asset - total_current_liabilities
+                # If the number of requests exceeds the limit, raise an exception
+                if len(request_times) > max_requests:
+                    raise Exception("Rate limit exceeded")
 
-        total_asset = company[1][company[1]["fiscalDateEnding"] == "Total Assets"].values[0][1:]
-        total_liabilities = company[1][company[1]["fiscalDateEnding"] == "Total Liabilities"].values[0][1:]
-        
-        Last_Stock_Price  = Data_Sets.Yahoo_Finance(self).get_data()
-        
-        Last_weekday = []
-        for i in np.arange(0,5):
-                current_date = datetime.now().date()
-                one_year_ago = current_date - pd.DateOffset(years=i)
-                business_days = pd.bdate_range(end=one_year_ago, periods=7)
-                last_friday = [business_days[business_days.weekday == 4].max()]
+                # Call the original function
+                return func(*args, **kwargs)
 
-                Last_weekday.append(last_friday)
-        Last_weekday = pd.DataFrame(Last_weekday)
-        Last_weekday[0] = pd.DatetimeIndex(Last_weekday[0].dt.strftime("%Y-%m-%d"))
-        
-        values = []
-        for i in np.arange(0,len(Last_weekday)):
-                Data_prices = Last_Stock_Price["Close"][Last_Stock_Price.index == Last_weekday.iloc[i][0]]
-                values.append(Data_prices)
-        values = pd.DataFrame(values)
-        
-        df_without_nan = values.dropna(axis = 0, how= "all")
-        LastStockPrice = df_without_nan.values.flatten()
-        LastStockPrice = pd.DataFrame(LastStockPrice)
-        LastStockPrice = LastStockPrice.dropna()
-        LastStockPrice.index = Last_weekday[0]
-        
-        Market_value_of_equity = company[1][company[1]["fiscalDateEnding"] == "Common Stock Shares Outstanding"].values[0][1:] * LastStockPrice[0].values[:]
+            return wrapper
 
-        
-        Net_Interest_Income = company[0][company[0]["fiscalDateEnding"] == "Net Interest Income"].values[0][1:]  
-        Non_Interest_Income = company[0][company[0]["fiscalDateEnding"] == "Non Interest Income"].values[0][1:]
-        Revenue = Net_Interest_Income + Non_Interest_Income
-
-
-        A = company_working_capital / total_asset
-        B = company[1][company[1]["fiscalDateEnding"] == "Retained Earnings"].values[0][1:] / total_asset
-        C = company[0][company[0]["fiscalDateEnding"] == "Ebit"].values[0][1:] / total_asset
-        D = Market_value_of_equity / total_liabilities
-        E = Revenue / total_asset
-
-        Altman_z_score = (1.2*A) + (1.4*B) + (3.3*C) + (0.6*D) + (1.0*E)
-        
-        Scores = pd.DataFrame(Altman_z_score, index=company[1].columns[1:], columns=["Altman Z Score"])
-
-        C_1 = company[0][company[0]["fiscalDateEnding"] == "Income Before Tax"].values[0][1:] / total_liabilities
-        D_1 = Revenue / total_asset
-
-        Springate_score = (1.03*A) + (3.07*C) + (0.66*C_1) + (0.4*D_1)
-
-        Scores["| Springate Score"] = Springate_score
-
-        A_1 = company[0][company[0]["fiscalDateEnding"] == "Net Income"].values[0][1:] / total_asset
-        B_1 = total_liabilities / total_asset
-        C_2 = total_current_asset / total_current_liabilities
-
-        constant = [-4.336,-4.336,-4.336,-4.336,-4.336]
-
-        Zmijewski_Score = (constant) + (-4.513*A_1) + (5.679*B_1) + (0.004 * C_2)
-
-        Scores["| Zmijewski Score"] = Zmijewski_Score
-
-        return Scores
+        return decorator
     
-    def WACC(self):
-        
-        company = Data_Sets.AlphaVantage(self).Financial_Statements()
-        Company_Last_Stock_Price = Data_Sets.Yahoo_Finance(self).get_data(period="min")
+@rate_limiter(max_requests=5, interval=60)
 
-        Outstanding_share        = company[1][company[1]["fiscalDateEnding"] == "Common Stock Shares Outstanding"].values[0][1]
-        Market_Capitalazation    = Outstanding_share * Company_Last_Stock_Price["Close"].values[0]
+def BankruptcyModels(self):
+    """ 
+        Springate Score = The Springate score is one of the well-known bankruptcy prediction models, 
+        which is developed on the basis of the Altman model. In the process of developing a model of the 19 financial 
+        ratios that were considered the best, Springate selected four coefficients, based on which the model was built.
 
-        # Cost of Debt
-        Total_Debt = company[1][company[1]["fiscalDateEnding"] == "Current Debt"].values[0][1] + company[1][company[1]["fiscalDateEnding"] == "Long Term Debt Noncurrent"].values[0][1] 
+        Zmijewski Score = The Zmijewski score is one of the most well-known models for predicting bankruptcy of enterprises, 
+        based on metrics like performance, leverage, and financial liquidity.
 
-        Cost_of_debt = pd.DataFrame()
-        Cost_of_debt["Interest_expense"] = [company[0][company[0]["fiscalDateEnding"] == "Interest Expense"].values[0][1]]
-        Cost_of_debt["Total Debt"] = [Total_Debt]
-        Cost_of_debt["Cost_debt"] = [company[0][company[0]["fiscalDateEnding"] == "Interest Expense"].values[0][1] / Total_Debt]
-        Cost_of_debt["Income_tax_expense"] = [company[0][company[0]["fiscalDateEnding"] == "Income Tax Expense"].values[0][1]]
-        Cost_of_debt["Before_Income_tax"] = [company[0][company[0]["fiscalDateEnding"] == "Income Before Tax"].values[0][1]] 
-        Cost_of_debt["Effective_tax_rate"]= Cost_of_debt.iloc[0]["Income_tax_expense"] / Cost_of_debt.iloc[0]["Before_Income_tax"]
-        Cost_of_debt["Cost_of_debt_after_tax"] = Cost_of_debt.iloc[0]["Cost_debt"] * (1 - Cost_of_debt.iloc[0]["Effective_tax_rate"])
+        Altman's Z Score = The Altman Z-score is the output of a credit-strength 
+        test that gauges a publicly traded manufacturing company's likelihood of bankruptcy.
 
-        # Cost of Equity
+    """
+    BankruptcyModels = Bankruptcymodels(self)
 
-        SP_500 = SPY = Data_Sets.Yahoo_Finance("SPY").get_data()
-        SP_500 = SPY[SPY.index >= "2021-01-01"]
-        SP_500 = SP_500["Close"]
+    return BankruptcyModels
 
-        Company_data  = Data_Sets.Yahoo_Finance(self).get_data()
-        Company_stock_price  = Company_data[Company_data.index >= "2021-01-01"]
-        Company_stock_price  = Company_stock_price["Close"]
-
-        SP_500_returns = SP_500.pct_change()
-        Company_returns  = Company_stock_price.pct_change()
-
-        covariance = Company_returns.cov(SP_500_returns) 
-        variance = SP_500_returns.var()
-
-        beta_coff = covariance / variance
-        beta_coff
-
-        Cost_of_Equity = pd.DataFrame()
-        Cost_of_Equity["Beta"] = [beta_coff]
-        Cost_of_Equity["Market_return"] = [0.09]
-        Cost_of_Equity["Risk_Free_Rate"] = [(Data_Sets.Yahoo_Finance("^TNX").get_data(period="10y").iloc[-1]["Close"]) / 100]
-        Cost_of_Equity["Cost_of_Equity"] = (Cost_of_Equity["Risk_Free_Rate"]) + (Cost_of_Equity["Beta"])*(Cost_of_Equity["Market_return"] - Cost_of_Equity["Risk_Free_Rate"])
-
-        # Weight of Debt and Equity
-        
-        D_E = pd.DataFrame()
-        
-        D_E["Total"] = [Total_Debt + Market_Capitalazation]
-        D_E["W_Total Debt"] = [Total_Debt / D_E.iloc[0]["Total"]]
-        D_E["W_MarketCap"]  = [Market_Capitalazation / D_E.iloc[0]["Total"]]
-
-        WACC = ((Cost_of_debt.iloc[0]["Cost_debt"]*D_E.iloc[0]["W_Total Debt"]*Cost_of_debt.iloc[0]["Cost_of_debt_after_tax"]) + (Cost_of_Equity.iloc[0]["Cost_of_Equity"]*D_E.iloc[0]["W_MarketCap"]))*100
-        
-        result = f"Weighted average cost of capital: {WACC}"
-        
-        return result
+def Beta(self): # Beta Coefficient
+    """
+        The beta coefficient formula is a financial metric that measures, 
+        how likely the price of a stock/security will change concerning the movement in the market price.
     
-    def Beta(self):
+    """
 
-        SP_500 = SPY = Data_Sets.Yahoo_Finance("SPY").get_data()
-        SP_500 = SPY[SPY.index >= "2021-01-01"]
-        SP_500 = SP_500["Close"]
+    Beta_coefficent = beta(self)
 
-        Company_data  = Data_Sets.Yahoo_Finance(self).get_data()
-        Company_stock_price  = Company_data[Company_data.index >= "2021-01-01"]
-        Company_stock_price  = Company_stock_price["Close"]
+    return Beta_coefficent
 
-        SP_500_returns = SP_500.pct_change()
-        Company_returns  = Company_stock_price.pct_change()
+def WACC(self): # Weighted Average Cost of Capital (WACC)
+    """
+        A firm’s Weighted Average Cost of Capital (WACC) represents its blended cost of capital across all sources, 
+        including common shares, preferred shares, and debt.
+    """
 
-        covariance = Company_returns.cov(SP_500_returns) 
-        variance = SP_500_returns.var()
+    WACC = wacc(self)
 
-        beta = covariance / variance
-
-        beta = f"Beta Coefficient of {self}: {beta}"
-
-        return beta
+    return WACC
