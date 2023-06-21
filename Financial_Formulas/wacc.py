@@ -7,8 +7,7 @@ from datetime import datetime
 
 # For Data
 import sys
-sys.path.insert(1,"D:\dosyalar\Github\Finance_Project\Data_Sets")
-
+sys.path.insert(0,"D:\dosyalar\Github\Finance_Project")
 import DataSets
 
 def wacc(self): # Weighted Average Cost of Capital (WACC)

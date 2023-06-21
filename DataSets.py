@@ -7,9 +7,9 @@ import numpy as np
 import time
 
 #Data Sets:
-from AlphaVantage_Data_Set import *
-from YahooFinance import *
-from FinancialModelPrep import *
+from Data_Sets.AlphaVantage_Data_Set import *
+from Data_Sets.YahooFinance import *
+from Data_Sets.FinancialModelPrep import *
 
 
 try:
@@ -137,4 +137,4 @@ except TypeError:
 except KeyError:
     
     print("Run commend ('ticker','information name') -- Such as Alphavantage('AAPL','News')")
-    
+
