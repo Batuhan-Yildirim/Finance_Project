@@ -153,8 +153,8 @@ dmypy.json
 cython_debug/
 
 #Extra Files
-D:\dosyalar\Github\Finance_Project\ML _Application\lightning_logs/
-
+./lightning_logs/
+./ML _Application/lightning_logs/
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
