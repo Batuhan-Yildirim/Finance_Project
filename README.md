@@ -105,6 +105,7 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices"
 - [AlphaVantage API](https://www.alphavantage.co/)
 - [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs/financial-statements-list-api/)
 - [Yfinance](https://pypi.org/project/yfinance/)
+- [Tiingo API](https://www.tiingo.com/)
 - [Yahoo Finance](https://finance.yahoo.com/)
 - [CNN Money](https://edition.cnn.com/markets)
 - [Investing.Com](https://www.investing.com/)
