@@ -112,6 +112,10 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices"
 - [LSTM Model](https://nixtla.github.io/neuralforecast/models.lstm.html)
 
 ---
+# Notes:
+
+**❗❗️When you downloaded this repository, You have to change the OS file path ❗️❗️❗️**
+---
 # For My Work Plan Template 📑
 
 [💲Finance Data Analyst For Python Planner](https://pixelpallette.gumroad.com/l/FinanceDataAnalystPlanner?layout=profile)
@@ -120,4 +124,5 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices"
 
 - More ML application
 - More Financial Formulas
+- Tiingo API 
 
