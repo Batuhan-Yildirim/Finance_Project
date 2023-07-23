@@ -49,7 +49,7 @@ Ford_data_enddate = DataSets.YahooFinance("TSLA","StockPrices",period = "min")
 > CompanyInfo, FinancialStatements, News
 
  ```RUN COMMAND
-TSLA = DataSets.Alphavantage("AAPL","FinancialStatements")  # "StokPrices" is a keyword, TSLA is a Symbol(Ticker)
+TSLA = DataSets.Alphavantage("AAPL","FinancialStatements")  # "FinancialStatements" is a keyword, TSLA is a Symbol(Ticker)
 ```
 **🔖For Error**
 
@@ -69,7 +69,7 @@ TSLA = DataSets.Alphavantage("AAPL","FinancialStatements")  # "StokPrices" is a 
 > IPOCalander, EarningCalander, FinancialRatio, KeyMetrics, EntrpriseValue, DCFHistorical, CompanyRating, CompanyRatingHistorical
 
 ```RUN COMMAND
-TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices" is a keyword, TSLA is a Symbol(Ticker)
+TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "FinancialStatements" is a keyword, TSLA is a Symbol(Ticker)
 ```
 
 **🔖For Error**
@@ -79,6 +79,34 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices"
         Attributes:
             Api Key Request --  request which caused the error
             message -- 250 requests per day
+```
+
+## 🟢 Tiingo API
+* [Tiingo API WorkBook](https://github.com/Ybatuhan-EcoBooster/Finance_ML_Project/blob/main/Finance_Data_Sets/Tiingo.ipynb)
+
+**Keywords**
+
+>Ticker, StockPrices, CompanyInfo, CryptoPrice, FOREX, IEX, KeyMetrics, FSFormulas
+
+```RUN COMMAND
+TSLA = DataSets.Tiingo("AAPL","FSFormulas")  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker)
+
+# Addition
+
+TSLA = DataSets.Tiingo("AAPL","FSFormulas", CashFlow = True)  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker), CashFlow is a specific parameter 
+```
+* **Note for Parameters 📢**: Cashflow = None, BalanceSheet = None, IncomeStatement = None, Other = None, formuladescription = None, daily = None should be True if you want to call these parameters data
+
+**🔖For Error**
+```Exception raised for errors in the input API Key.
+
+        Attributes:
+        Api Key Request --  request which caused the error
+        Unique Symbols per Month -- 500 (Free Verison)
+        Max Requests Per Hour -- 50 (Free Version)
+        Max Requests Per Day -- 1000(Free Version)
+        message -- 50 API requests per hour and 1000 requests per day
+        website -- https://www.tiingo.com/about/pricing
 ```
 
 ---
@@ -125,5 +153,5 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "StokPrices"
 
 - More ML application
 - More Financial Formulas
-- Tiingo API 
+
 
