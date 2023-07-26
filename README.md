@@ -92,8 +92,9 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "FinancialSt
 TSLA = DataSets.Tiingo("AAPL","FSFormulas")  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker)
 
 # Addition
+!! For Ticker = DataSets.tiingo.Ticker()
 
-TSLA = DataSets.Tiingo("AAPL","FSFormulas", CashFlow = True)  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker), CashFlow is a specific parameter 
+!! TSLA = DataSets.Tiingo("AAPL","FSFormulas", CashFlow = True)  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker), CashFlow is a specific parameter 
 ```
 * **Note for Parameters 📢**: Cashflow = None, BalanceSheet = None, IncomeStatement = None, Other = None, formuladescription = None, daily = None should be True if you want to call these parameters data
 
