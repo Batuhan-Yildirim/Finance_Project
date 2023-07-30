@@ -84,17 +84,20 @@ TSLA = DataSets.FinancialModelPrep("AAPL","FinancialStatements")  # "FinancialSt
 ## 🟢 Tiingo API
 * [Tiingo API WorkBook](https://github.com/Ybatuhan-EcoBooster/Finance_ML_Project/blob/main/Finance_Data_Sets/Tiingo.ipynb)
 
-**Keywords**
+**Parameters**
 
 >Ticker, StockPrices, CompanyInfo, CryptoPrice, FOREX, IEX, KeyMetrics, FSFormulas
 
 ```RUN COMMAND
-TSLA = DataSets.Tiingo("AAPL","FSFormulas")  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker)
+# For Data
+import sys
+sys.path.insert(0,".\Finance_Project\Data_Sets/")
+TSLA = tiingo("AAPL").FSFormulas()
 
 # Addition
-!! For Ticker = DataSets.tiingo.Ticker()
+!! For Ticker = tiingo().Ticker()
 
-!! TSLA = DataSets.Tiingo("AAPL","FSFormulas", CashFlow = True)  # "FSFormulas" is a keyword, TSLA is a Symbol(Ticker), CashFlow is a specific parameter 
+!! TSLA = tiingo("TSLA").FSFormulas(CashFlow = True)  # .FSFormulas() is a def, TSLA is a Symbol(Ticker), CashFlow is a specific parameter 
 ```
 * **Note for Parameters 📢**: Cashflow = None, BalanceSheet = None, IncomeStatement = None, Other = None, formuladescription = None, daily = None should be True if you want to call these parameters data
 
