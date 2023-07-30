@@ -1,8 +1,3 @@
-# Core Libraries 
-import pandas as pd
-import numpy as np
-
-
 # Error Message
 import time
 
@@ -10,7 +5,6 @@ import time
 from Data_Sets.AlphaVantage_Data_Set import *
 from Data_Sets.YahooFinance import *
 from Data_Sets.FinancialModelPrep import *
-from Data_Sets.Tiingo import *
 
 # Warning Signs
 import warnings
@@ -134,53 +128,6 @@ try:
         else:
             
             return f"Invalid method name -- try: {methods}"
-        
-    def Tiingo(symbol,method_name,startdate=None,enddate=None,Resamplefreq = None,daily = None,Cashflow = None, 
-               BalanceSheet = None, IncomeStatement = None, Other = None,formuladescraption = None):
-        
-        """Exception raised for errors in the input API Key.
-
-        Attributes:
-            Api Key Request --  request which caused the error
-            Unique Symbols per Month -- 500 (Free Verison)
-            Max Requests Per Hour -- 50 (Free Version)
-            Max Requests Per Day -- 1000(Free Version)
-            message -- 50 API requests per hour and 1000 requests per day
-            website -- https://www.tiingo.com/about/pricing
-        """
-        methods = list(tiingo.__dict__.keys())
-        methods = methods[3:-2]
-        
-        Tiingo_data = tiingo(symbol)
-        Tiingo_stokprices = tiingo(symbol).StockPrices(startdate,enddate,Resamplefreq)
-        Tiingo_cryptoprice = tiingo(symbol).CryptoPrice(startdate,enddate,Resamplefreq)
-        Tiingo_forex = tiingo(symbol).FOREX(startdate,enddate,Resamplefreq,daily)
-        Tiingo_iex = tiingo(symbol).IEX(startdate,enddate,Resamplefreq,daily)
-        Tiingo_fsformulas = tiingo(symbol).FSFormulas(Cashflow,BalanceSheet,IncomeStatement,Other,formuladescraption)
-
-        if method_name in methods:
-
-            if "StockPrices" in method_name:
-                return Tiingo_stokprices
-            
-            elif "CryptoPrice"  in method_name:
-                return Tiingo_cryptoprice
-            
-            elif "FOREX"  in method_name:
-                return Tiingo_forex
-            
-            elif "IEX"  in method_name:
-                return Tiingo_iex
-            
-            elif "FSFormulas"  in method_name:
-                return Tiingo_fsformulas
-            else:
-                result = getattr(Tiingo_data, method_name)()
-                return result
-
-        else:
-            return f"Invalid method name -- try: {methods}"
-
  
 except TypeError:
     
@@ -189,5 +136,3 @@ except TypeError:
 except KeyError:
     
     print("Run commend ('ticker','information name') -- Such as Alphavantage('AAPL','News')")
-
-

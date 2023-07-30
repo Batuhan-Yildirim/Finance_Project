@@ -3,12 +3,16 @@ import pandas as pd
 import numpy as np
 import requests
 
+
 #for API Key
 from dotenv import load_dotenv
 import os
 def configure():
     load_dotenv()
 
+# Warning Signs
+import warnings
+warnings.filterwarnings('ignore')
 
 class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/general/overview)
 
@@ -26,7 +30,7 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
         self.ticker = ticker
         configure()
 
-    def Ticker():
+    def Ticker(self):
         Stickers = pd.read_csv("D:\dosyalar\Github\Finance_Project\Finance_Data_Sets\TickerForTiingo\supported_tickers.csv")
         
         return Stickers
@@ -70,8 +74,6 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
             print("Data is gathering !!")
         except TypeError:
             print("Data is gathering !!")      
-        except ValueError:
-            print("You should wait hour or day !! -- 50 API requests per hour and 1000 requests per day or This Date is not acceptable")
 
         
     def CompanyInfo(self):
@@ -134,8 +136,6 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
             print("Data is gathering !!")
         except TypeError:
             print("Data is gathering !!")      
-        except ValueError:
-            print("You should wait hour or day !! -- 50 API requests per hour and 1000 requests per day or This Date is not acceptable")
         
     def FOREX(self,startdate = None,enddate = None,Resamplefreq = None, daily = None):
         if daily != True:
@@ -174,8 +174,6 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
                 print("Data is gathering !!")
             except TypeError:
                 print("Data is gathering !!")      
-            except ValueError:
-                print("You should wait hour or day !! -- 50 API requests per hour and 1000 requests per day or This Date is not acceptable")
         
         else:
             headers = {'Content-Type': 'application/json'}
@@ -222,8 +220,6 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
                 print("Data is gathering !!")
             except TypeError:
                 print("Data is gathering !!")      
-            except ValueError:
-                print("You should wait hour or day !! -- 50 API requests per hour and 1000 requests per day or This Date is not acceptable")
         
         else:
             headers = {'Content-Type': 'application/json'}
@@ -347,5 +343,3 @@ class tiingo(): # Tiingo documentation (https://www.tiingo.com/documentation/gen
             data_Fdes = requestResponse.json()
             Fundamentals = pd.DataFrame(data_Fdes)
             return Fundamentals
-
-
