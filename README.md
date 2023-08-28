@@ -130,6 +130,8 @@ TSLA = tiingo("AAPL").FSFormulas()
 
 ## Machine Learning:
 * [LSTM Neural Network Workbook](https://github.com/Ybatuhan-EcoBooster/Finance_Library_Project/blob/main/ML%20_Application/LSTM_Neural.ipynb)
+* [Stock Prediction](https://github.com/Ybatuhan-EcoBooster/Finance_Project/blob/main/ML%20_Application/StockPrediction.ipynb)
+* [Xgboost Model and LightGBM Model Prediciyon](https://github.com/Ybatuhan-EcoBooster/Finance_Project/blob/main/ML%20_Application/XGBoost_LightGBM.ipynb)
 
 ---
 
@@ -152,10 +154,4 @@ TSLA = tiingo("AAPL").FSFormulas()
 # For My Work Plan Template 📑
 
 [💲Finance Data Analyst For Python Planner](https://pixelpallette.gumroad.com/l/FinanceDataAnalystPlanner?layout=profile)
----
-# Soon 🔜
-
-- More ML application
-- More Financial Formulas
-
 
